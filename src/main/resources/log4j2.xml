@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="INFO">
+    <Properties>
+        <Property name="LOG_PATTERN">
+            %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %class{36}.%M %L - %msg%n
+        </Property>
+    </Properties>
+    <Appenders> 
+        <!-- Rolling File Appender -->
+        <RollingFile name="service" fileName="/path/service.log" 
+                     filePattern="/path/service-%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="10MB" />
+            </Policies> 
+            <DefaultRolloverStrategy max="3"/>
+        </RollingFile>
+        
+    </Appenders>
+    <Loggers>
+        <Root level="ERROR">
+            <AppenderRef ref="service" />
+        </Root> 
+        <!-- This app -->
+        <Logger name="com.prottonne.log" level="INFO" additivity="false">
+            <AppenderRef ref="service"/>
+        </Logger>   
+        <!-- Springboot-->      
+        <Logger name="org.eclipse.jetty.server" level="INFO" additivity="false">
+            <AppenderRef ref="service"/>
+        </Logger>   
+        <!-- Jetty server -->       
+        <Logger name="org.springframework.boot" level="INFO" additivity="false">
+            <AppenderRef ref="service"/>
+        </Logger>         
+        <!-- SOAP Webservices -->
+        <Logger name="org.springframework.ws.client" level="TRACE" additivity="false">
+            <AppenderRef ref="service"/>
+        </Logger> 
+        <!-- Databases -->
+        <Logger name="org.hibernate.resource.jdbc.internal.ResourceRegistryStandardImpl" level="TRACE" additivity="false">
+            <AppenderRef ref="service"/>
+        </Logger>
+        <!-- aws -->
+        <Logger name="com.amazonaws.request" level="INFO" additivity="false">
+            <AppenderRef ref="service"/>
+        </Logger>        
+    </Loggers>    
+</Configuration>
